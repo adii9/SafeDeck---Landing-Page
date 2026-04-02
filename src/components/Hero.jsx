@@ -1,9 +1,60 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Zap, Mail } from 'lucide-react';
+import { useGoogleLogin } from '@react-oauth/google';
+import { useNavigate } from 'react-router-dom';
 import ThreeDScene from './ThreeDScene';
 
 const Hero = () => {
+  const navigate = useNavigate();
+
+  const login = useGoogleLogin({
+    onSuccess: async (codeResponse) => {
+      try {
+        console.log('Login Success, fetching user info...');
+        // 1. Get user info from Google using the access token
+        const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${codeResponse.access_token}` }
+        });
+        const userInfo = await userInfoResponse.json();
+
+        // 2. Prepare exact payload format requested for user-sync API
+        const syncPayload = {
+          httpMethod: "POST",
+          body: JSON.stringify({
+            userId: userInfo.sub || "google_12345",
+            email: userInfo.email || "adii@safedeck.com"
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          },
+          requestContext: {
+            identity: {
+              sourceIp: "127.0.0.1"
+            }
+          }
+        };
+
+        // 3. Call the authentication/user-sync API
+        const syncResponse = await fetch('https://i7az96pt3l.execute-api.eu-north-1.amazonaws.com/default/user-sync', {
+          method: 'POST',
+          headers: {
+            'x-api-key': import.meta.env.VITE_AWS_API_KEY,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(syncPayload)
+        });
+
+        console.log('Sync Response Status:', syncResponse.status);
+        
+        // Navigate after everything succeeds
+        navigate('/dashboard');
+      } catch (error) {
+        console.error('Authentication process failed:', error);
+      }
+    },
+    onError: (error) => console.log('Login Failed:', error)
+  });
   return (
     <section style={{ 
       minHeight: '100vh', 
@@ -69,7 +120,7 @@ const Hero = () => {
             The moment a pitch hits your email, SafeDeck's AI intercepts it. It reads the deck, extracts all 53 vital data points, and perfectly populates your Excel sheet or Custom CRM. Zero manual entry.
           </p>
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-             <button className="btn btn-primary pulse-glowing">
+             <button className="btn btn-primary pulse-glowing" onClick={() => login()}>
                 Start Free Trial <Zap size={18} />
              </button>
              <button className="btn btn-secondary">

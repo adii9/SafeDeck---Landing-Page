@@ -1,23 +1,14 @@
 import React from 'react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import ProblemSolution from './components/ProblemSolution';
-import FeatureCards from './components/FeatureCards';
-import CallToAction from './components/CallToAction';
-import Footer from './components/Footer';
+import { Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
-    <>
-      <Header />
-      <main>
-        <Hero />
-        <ProblemSolution />
-        <FeatureCards />
-        <CallToAction />
-      </main>
-      <Footer />
-    </>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+    </Routes>
   );
 }
 
