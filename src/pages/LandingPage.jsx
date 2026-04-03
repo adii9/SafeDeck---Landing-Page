@@ -4,6 +4,7 @@ import Hero from '../components/Hero';
 import ProblemSolution from '../components/ProblemSolution';
 import FeatureCards from '../components/FeatureCards';
 import CallToAction from '../components/CallToAction';
+import Pricing from '../components/Pricing';
 import Footer from '../components/Footer';
 
 const LandingPage = () => {
@@ -14,6 +15,7 @@ const LandingPage = () => {
         <Hero />
         <ProblemSolution />
         <FeatureCards />
+        <Pricing />
         <CallToAction />
       </main>
       <Footer />

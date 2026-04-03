@@ -123,7 +123,7 @@ const Hero = () => {
              <button className="btn btn-primary pulse-glowing" onClick={() => login()}>
                 Start Free Trial <Zap size={18} />
              </button>
-             <button className="btn btn-secondary">
+             <button className="btn btn-secondary" onClick={() => navigate('/sample-audit')}>
                 View Sample Audit
              </button>
           </div>

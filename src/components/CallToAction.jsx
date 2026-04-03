@@ -18,11 +18,11 @@ const CallToAction = () => {
         zIndex: -1
       }} />
       <div className="container">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="glass-panel" 
+          className="glass-panel"
           style={{ padding: '4rem 2rem', textAlign: 'center', border: '1px solid var(--accent-purple)' }}
         >
           <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>Ready to Scale Your <span className="text-gradient">Deal Flow?</span></h2>
@@ -33,9 +33,9 @@ const CallToAction = () => {
             <button className="btn btn-primary pulse-glowing" style={{ fontSize: '1.1rem', padding: '1rem 2rem' }}>
               Book Your Free Demo
             </button>
-            <button className="btn btn-secondary" style={{ fontSize: '1.1rem', padding: '1rem 2rem' }}>
+            {/* <button className="btn btn-secondary" style={{ fontSize: '1.1rem', padding: '1rem 2rem' }}>
               Pricing Plans
-            </button>
+            </button> */}
           </div>
         </motion.div>
       </div>
