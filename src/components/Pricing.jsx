@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Pricing = () => {
+  const navigate = useNavigate();
   const plans = [
     {
       name: 'Starter',
@@ -12,7 +14,7 @@ const Pricing = () => {
       features: [
         { label: 'Pitch Decks', value: '40 decks included' },
         { label: 'Additional decks', value: '₹600 / $7.50 per deck' },
-        { label: 'AI Audit', value: 'Full CrewAI audit with team, market & financials analysis' },
+        { label: 'AI Audit', value: 'Full CrewAI audit (team, market, financials)' },
         { label: 'CRM Sync', value: 'Google Sheets only' },
         { label: 'Email Inbox', value: '1 inbox connected' },
         { label: 'Audit Reports', value: 'Standard format' },
@@ -33,7 +35,7 @@ const Pricing = () => {
         { label: 'Pitch Decks', value: '120 decks included' },
         { label: 'Additional decks', value: '₹400 / $5 per deck' },
         { label: 'AI Audit', value: 'Full CrewAI audit + detailed red flags report' },
-        { label: 'CRM Sync', value: 'Google Sheets + Affinity + HubSpot' },
+        { label: 'CRM Sync', value: 'Sheets + Affinity + HubSpot' },
         { label: 'Email Inbox', value: 'Up to 3 inboxes connected' },
         { label: 'Audit Reports', value: 'Detailed format with comparison views' },
       ],
@@ -52,7 +54,7 @@ const Pricing = () => {
       features: [
         { label: 'Pitch Decks', value: 'Unlimited' },
         { label: 'Additional decks', value: 'Included' },
-        { label: 'AI Audit', value: 'Custom CrewAI configuration + white-label reports' },
+        { label: 'AI Audit', value: 'Custom configuration + white-label reports' },
         { label: 'CRM Sync', value: 'Salesforce + Affinity + HubSpot + Custom API' },
         { label: 'Email Inbox', value: 'Unlimited inboxes' },
         { label: 'Audit Reports', value: 'Custom branded PDF reports' },
@@ -157,7 +159,11 @@ const Pricing = () => {
                 </div>
               </div>
 
-              <button className={`btn ${plan.popular ? 'btn-primary' : 'btn-secondary'}`} style={{ width: '100%' }}>
+              <button 
+                className={`btn ${plan.popular ? 'btn-primary' : 'btn-secondary'}`} 
+                style={{ width: '100%' }}
+                onClick={() => navigate('/pricing')}
+              >
                 Get Started
               </button>
             </motion.div>

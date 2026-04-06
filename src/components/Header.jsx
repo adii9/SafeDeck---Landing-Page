@@ -41,8 +41,9 @@ const Header = () => {
            transition={{ delay: 0.1 }}
            style={{ display: 'flex', gap: '2rem', alignItems: 'center', fontWeight: '500' }}
         >
-          <a href="#problems" style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>How it Works</a>
-          <a href="#features" style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>Features</a>
+          <a href="#problems" className="mobile-hidden" style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>How it Works</a>
+          <a href="#features" className="mobile-hidden" style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>Features</a>
+          <a href="/pricing" className="mobile-hidden" style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>Pricing</a>
           <button className="btn btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.95rem' }}>
             Book Demo
           </button>

@@ -1,54 +1,53 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Check, X, Zap, Users, Database, Mail, FileText, Shield, Headphones, Crown, Globe, Clock, BarChart3 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Bot, Check, X, Zap, Users, Database, Mail, FileText, Shield, Headphones, Crown, Globe, Clock, BarChart3 } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const PLANS = [
   {
     name: 'Starter',
+    planKey: 'starter',
     price: { usd: '$375', inr: '₹30,000' },
     period: 'per month',
     badge: null,
-    cta: 'Start Free Trial',
+    cta: 'Buy Now',
     ctaStyle: 'secondary',
     description: 'Perfect for early-stage funds getting started with AI-powered deal flow.',
     decksIncluded: '40',
     decksOverage: { usd: '$7.50', inr: '₹600' },
-    users: '3',
     features: [
       { icon: Bot, label: 'AI Audit', sublabel: 'Full CrewAI audit — team, market & financials', included: true },
-      { icon: FileText, label: 'Audit Reports', sublabel: 'Standard structured format', included: true },
-      { icon: Shield, label: 'Red Flag Detection', sublabel: 'AI-powered risk identification', included: true },
       { icon: Database, label: 'CRM Sync', sublabel: 'Google Sheets only', included: true },
       { icon: Mail, label: 'Email Inbox', sublabel: '1 inbox connected', included: true },
+      { icon: FileText, label: 'Audit Reports', sublabel: 'Standard structured format', included: true },
+      { icon: Shield, label: 'Red Flag Detection', sublabel: '', included: false },
       { icon: Globe, label: 'API Access', sublabel: '', included: false },
       { icon: Headphones, label: 'Priority Support', sublabel: '', included: false },
-      { icon: Crown, label: 'Custom Branding', sublabel: '', included: false },
     ],
     gradient: 'rgba(59, 130, 246, 0.05)',
     border: 'rgba(59, 130, 246, 0.2)',
   },
   {
     name: 'Growth',
+    planKey: 'growth',
     price: { usd: '$688', inr: '₹55,000' },
     period: 'per month',
     badge: 'Most Popular',
-    cta: 'Start Free Trial',
+    cta: 'Buy Now',
     ctaStyle: 'primary',
     description: 'For active funds processing serious deal flow with full CRM integration.',
     decksIncluded: '120',
     decksOverage: { usd: '$5', inr: '₹400' },
-    users: '8',
     features: [
       { icon: Bot, label: 'AI Audit', sublabel: 'Full CrewAI audit + detailed red flags report', included: true },
-      { icon: FileText, label: 'Audit Reports', sublabel: 'Detailed format with comparison views', included: true },
-      { icon: Shield, label: 'Red Flag Detection', sublabel: 'AI-powered risk identification', included: true },
       { icon: Database, label: 'CRM Sync', sublabel: 'Sheets + Affinity + HubSpot', included: true },
       { icon: Mail, label: 'Email Inbox', sublabel: 'Up to 3 inboxes connected', included: true },
+      { icon: FileText, label: 'Audit Reports', sublabel: 'Detailed format with comparison views', included: true },
+      { icon: Shield, label: 'Red Flag Detection', sublabel: 'AI-powered risk identification', included: true },
       { icon: Globe, label: 'API Access', sublabel: 'Full REST API access', included: true },
       { icon: Headphones, label: 'Priority Support', sublabel: 'Fast-response dedicated channel', included: true },
-      { icon: Crown, label: 'Custom Branding', sublabel: '', included: false },
     ],
     gradient: 'rgba(139, 92, 246, 0.1)',
     border: 'rgba(139, 92, 246, 0.4)',
@@ -56,24 +55,25 @@ const PLANS = [
   },
   {
     name: 'Enterprise',
+    planKey: 'enterprise',
     price: { usd: '$1,250+', inr: '₹1,00,000+' },
     period: 'per month',
     badge: null,
-    cta: 'Contact Sales',
+    cta: 'Buy Now',
     ctaStyle: 'secondary',
     description: 'For funds that need unlimited scale, white-label reports, and dedicated support.',
     decksIncluded: 'Unlimited',
     decksOverage: { usd: 'Included', inr: 'Included' },
-    users: 'Unlimited',
     features: [
-      { icon: Bot, label: 'AI Audit', sublabel: 'Custom CrewAI configuration + white-label reports', included: true },
-      { icon: FileText, label: 'Audit Reports', sublabel: 'Custom branded PDF reports', included: true },
-      { icon: Shield, label: 'Red Flag Detection', sublabel: 'AI-powered risk identification', included: true },
+      { icon: Bot, label: 'AI Audit', sublabel: 'Custom configuration + white-label reports', included: true },
       { icon: Database, label: 'CRM Sync', sublabel: 'Salesforce + Affinity + HubSpot + Custom API', included: true },
       { icon: Mail, label: 'Email Inbox', sublabel: 'Unlimited inboxes', included: true },
+      { icon: FileText, label: 'Audit Reports', sublabel: 'Custom branded PDF reports', included: true },
+      { icon: Shield, label: 'Red Flag Detection', sublabel: 'Built-in detection', included: true },
       { icon: Globe, label: 'API Access', sublabel: 'Full REST API access', included: true },
       { icon: Headphones, label: 'Priority Support', sublabel: 'Dedicated account manager', included: true },
-      { icon: Crown, label: 'Custom Branding', sublabel: 'White-label for your fund', included: true },
+      { icon: Users, label: 'Onboarding', sublabel: 'Custom setup & training', included: true },
+      { icon: Clock, label: 'SLA', sublabel: '99.9% uptime guarantee', included: true },
     ],
     gradient: 'rgba(6, 182, 212, 0.05)',
     border: 'rgba(6, 182, 212, 0.2)',
@@ -91,7 +91,7 @@ const FAQ = [
   },
   {
     q: 'Is there a free trial?',
-    a: 'Yes — all plans start with a 14-day free trial. No credit card required to start.',
+    a: 'We offer a customized onboarding experience to help you get started quickly. Contact our team to see a live demo of SafeDeck in action.',
   },
   {
     q: 'Can I switch plans mid-month?',
@@ -135,7 +135,9 @@ const FeatureIcon = ({ Icon, label, sublabel, included }) => (
   </div>
 );
 
-const PricingCard = ({ plan, index }) => (
+const PricingCard = ({ plan, index }) => {
+  const navigate = useNavigate();
+  return (
   <motion.div
     initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -192,10 +194,9 @@ const PricingCard = ({ plan, index }) => (
     </div>
 
     {/* Deck & User Stats */}
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1.5rem' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.75rem', marginBottom: '1.5rem' }}>
       {[
         { icon: FileText, label: 'Decks/mo', value: plan.decksIncluded },
-        { icon: Users, label: 'Users', value: plan.users },
       ].map(({ icon: Icon, label, value }) => (
         <div key={label} style={{
           background: 'rgba(255,255,255,0.04)',
@@ -228,6 +229,7 @@ const PricingCard = ({ plan, index }) => (
     <button
       className={`btn btn-${plan.ctaStyle}`}
       style={{ width: '100%', marginBottom: '1.5rem' }}
+      onClick={() => navigate(`/checkout?plan=${plan.planKey}`)}
     >
       {plan.cta}
     </button>
@@ -238,7 +240,8 @@ const PricingCard = ({ plan, index }) => (
       ))}
     </div>
   </motion.div>
-);
+  );
+};
 
 const FaqItem = ({ item, index }) => {
   const [open, setOpen] = React.useState(false);
@@ -287,7 +290,7 @@ const Pricing = () => {
       <Header />
 
       {/* Hero */}
-      <section style={{
+      <section className="section-padding" style={{
         padding: '160px 0 80px',
         textAlign: 'center',
         position: 'relative',
@@ -371,7 +374,7 @@ const Pricing = () => {
       </section>
 
       {/* Pricing Cards */}
-      <section style={{ padding: '0 0 100px' }}>
+      <section className="section-padding" style={{ padding: '0 0 100px' }}>
         <div className="container">
           <div style={{
             display: 'grid',
@@ -390,19 +393,19 @@ const Pricing = () => {
             viewport={{ once: true }}
             style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.82rem', color: 'var(--text-secondary)' }}
           >
-            All prices in INR. USD prices shown for reference at 1 USD = ₹80.{' '}
-            <span style={{ color: 'var(--accent-purple)' }}>14-day free trial</span> on all plans. No credit card required.
+            All prices in INR. USD prices shown for reference at 1 USD = ₹80.
           </motion.p>
         </div>
       </section>
 
       {/* ROI Calculator teaser */}
-      <section style={{ padding: '0 0 100px' }}>
+      <section className="section-padding" style={{ padding: '0 0 100px' }}>
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            className="mobile-p-4"
             style={{
               background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(6, 182, 212, 0.05))',
               border: '1px solid rgba(139, 92, 246, 0.2)',
@@ -440,7 +443,7 @@ const Pricing = () => {
       </section>
 
       {/* FAQ */}
-      <section style={{ padding: '0 0 120px' }}>
+      <section className="section-padding" style={{ padding: '0 0 120px' }}>
         <div className="container" style={{ maxWidth: '720px' }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}

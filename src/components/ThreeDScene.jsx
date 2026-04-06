@@ -146,7 +146,7 @@ const OutgoingNode = ({ index }) => {
 
 const ThreeDScene = () => {
   return (
-    <div style={{ width: '100%', height: '100%', minHeight: '600px', position: 'relative' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <Canvas camera={{ position: [0, 0, 9], fov: 45 }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />

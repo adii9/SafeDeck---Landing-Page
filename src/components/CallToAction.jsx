@@ -22,20 +22,17 @@ const CallToAction = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="glass-panel"
+          className="glass-panel mobile-p-4"
           style={{ padding: '4rem 2rem', textAlign: 'center', border: '1px solid var(--accent-purple)' }}
         >
-          <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>Ready to Scale Your <span className="text-gradient">Deal Flow?</span></h2>
+          <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '1.5rem' }}>Ready to Scale Your <span className="text-gradient">Deal Flow?</span></h2>
           <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto 3rem auto' }}>
             Stop doing manual grunt work. Start finding the best founders faster than the competition.
           </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <button className="btn btn-primary pulse-glowing" style={{ fontSize: '1.1rem', padding: '1rem 2rem' }}>
-              Book Your Free Demo
+          <div className="mobile-btn-stack" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <button className="btn btn-primary pulse-glowing" onClick={() => window.location.href = '/pricing'} style={{ fontSize: '1.1rem', padding: '1rem 2rem' }}>
+              Select Your Plan
             </button>
-            {/* <button className="btn btn-secondary" style={{ fontSize: '1.1rem', padding: '1rem 2rem' }}>
-              Pricing Plans
-            </button> */}
           </div>
         </motion.div>
       </div>

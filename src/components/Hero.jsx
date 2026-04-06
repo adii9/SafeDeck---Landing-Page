@@ -47,6 +47,15 @@ const Hero = () => {
 
         console.log('Sync Response Status:', syncResponse.status);
         
+        // Persist user data so Dashboard can personalise the experience
+        localStorage.setItem('safedeck_user', JSON.stringify({
+          name: userInfo.name,
+          email: userInfo.email,
+          picture: userInfo.picture,
+          givenName: userInfo.given_name,
+          userId: userInfo.sub,
+        }));
+
         // Navigate after everything succeeds
         navigate('/dashboard');
       } catch (error) {
@@ -56,11 +65,11 @@ const Hero = () => {
     onError: (error) => console.log('Login Failed:', error)
   });
   return (
-    <section style={{ 
+    <section className="section-padding" style={{ 
       minHeight: '100vh', 
       display: 'flex', 
-      alignItems: 'center', 
-      paddingTop: '80px',
+      alignItems: 'center',
+      paddingTop: '100px',
       position: 'relative',
       overflow: 'hidden'
     }}>
@@ -90,7 +99,7 @@ const Hero = () => {
         zIndex: -1
       }} />
 
-      <div className="container" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '4rem', alignItems: 'center' }}>
+      <div className="container responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '4rem', alignItems: 'center' }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -119,9 +128,9 @@ const Hero = () => {
           <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', marginBottom: '2.5rem', maxWidth: '540px' }}>
             The moment a pitch hits your email, SafeDeck's AI intercepts it. It reads the deck, extracts all 53 vital data points, and perfectly populates your Excel sheet or Custom CRM. Zero manual entry.
           </p>
-          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-             <button className="btn btn-primary pulse-glowing" onClick={() => login()}>
-                Start Free Trial <Zap size={18} />
+          <div className="mobile-btn-stack" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+             <button className="btn btn-primary pulse-glowing" onClick={() => navigate('/pricing')}>
+                Get Started <Zap size={18} />
              </button>
              <button className="btn btn-secondary" onClick={() => navigate('/sample-audit')}>
                 View Sample Audit
@@ -129,11 +138,12 @@ const Hero = () => {
           </div>
         </motion.div>
 
-        {/* Immersive 3D Visual Element replaces CSS Cards */}
+        {/* Immersive 3D Visual Element */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
+          className="hero-canvas-container"
           style={{ position: 'relative', height: '600px', overflow: 'visible', cursor: 'grab' }}
         >
            <ThreeDScene />

@@ -12,6 +12,26 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [selectedDeck, setSelectedDeck] = useState(null);
 
+  // Read persisted user from localStorage (written by Hero login or Onboarding flow)
+  const [currentUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('safedeck_user');
+      return stored ? JSON.parse(stored) : null;
+    } catch { return null; }
+  });
+
+  // Time-aware greeting
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
+  const firstName = currentUser?.givenName || currentUser?.name?.split(' ')[0] || 'there';
+  const fundName = currentUser?.user?.fund_name || null;
+  const fundRole = currentUser?.user?.role || null;
+
   useEffect(() => {
     const fetchDecks = async () => {
       try {
@@ -81,6 +101,7 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     googleLogout();
+    localStorage.removeItem('safedeck_user');
     navigate('/');
   };
 
@@ -113,16 +134,48 @@ const Dashboard = () => {
           <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-cyan))', borderRadius: '8px' }}></div>
           SafeDeck <span style={{ fontWeight: 300, color: 'var(--text-secondary)' }}>| Dashboard</span>
         </div>
-        <button className="btn btn-secondary" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem' }}>
-          <LogOut size={16} /> Logout
-        </button>
+
+        {/* User chip in header */}
+        <div className="mobile-btn-stack" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {currentUser && (
+            <div className="mobile-hidden" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.4rem 0.8rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '50px' }}>
+              {currentUser.picture ? (
+                <img src={currentUser.picture} alt="" style={{ width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0 }} />
+              ) : (
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-purple))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700, flexShrink: 0 }}>
+                  {firstName[0]?.toUpperCase()}
+                </div>
+              )}
+              <div>
+                <div style={{ fontSize: '0.82rem', fontWeight: 600, lineHeight: 1.2 }}>{currentUser.name || currentUser.email}</div>
+                {fundRole && <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', lineHeight: 1.2 }}>{fundRole}</div>}
+              </div>
+            </div>
+          )}
+          <button className="btn btn-secondary" onClick={() => navigate('/pricing')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem' }}>
+            <Target size={16} color="var(--accent-cyan)" /> <span className="mobile-hidden">Pricing</span>
+          </button>
+          <button className="btn btn-secondary" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem' }}>
+            <LogOut size={16} /> <span className="mobile-hidden">Logout</span>
+          </button>
+        </div>
       </header>
 
       <main className="container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem' }}>
+        <div className="responsive-flex-col" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', gap: '1.5rem' }}>
           <div>
-            <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Welcome to your <span className="text-gradient">Workspace</span></h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>Manage and review your AI-analyzed pitch decks.</p>
+            {/* Personalised greeting */}
+            <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', marginBottom: '0.4rem' }}>
+              {getGreeting()}, <span className="text-gradient">{firstName}</span> 👋
+            </h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0 }}>Manage and review your AI-analyzed pitch decks.</p>
+              {fundName && (
+                <span style={{ padding: '0.2rem 0.65rem', background: 'rgba(6, 182, 212, 0.08)', border: '1px solid rgba(6, 182, 212, 0.2)', borderRadius: '20px', color: 'var(--accent-cyan)', fontSize: '0.75rem', fontWeight: 600 }}>
+                  {fundName}
+                </span>
+              )}
+            </div>
           </div>
           
           <div className="glass-panel" style={{ display: 'flex', alignItems: 'center', padding: '0.5rem 1rem', borderRadius: '20px', gap: '0.5rem', border: '1px solid rgba(255,255,255,0.1)' }}>

@@ -163,3 +163,99 @@ p {
 .spin-animation {
   animation: spin 1s linear infinite;
 }
+
+/* =========================================
+   Responsive Utilities
+   ========================================= */
+
+@media (max-width: 900px) {
+  .responsive-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Layout utilities */
+  .responsive-flex-col {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  .responsive-flex-col-center {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  .mobile-block {
+    display: block !important;
+  }
+
+  /* Padding & Margin adjustments */
+  .section-padding {
+    padding: 60px 0 !important;
+  }
+
+  .mobile-p-4 {
+    padding: 1rem !important;
+  }
+  
+  .mobile-px-4 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .mobile-py-8 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .mobile-gap-4 {
+    gap: 1rem !important;
+  }
+
+  /* Typography */
+  .mobile-text-center {
+    text-align: center !important;
+  }
+
+  .mobile-text-sm {
+    font-size: 0.875rem !important;
+  }
+  
+  .mobile-w-full {
+    width: 100% !important;
+  }
+  
+  /* Buttons */
+  .mobile-btn-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+  
+  .mobile-btn-stack > button {
+    width: 100%;
+  }
+  
+  /* SafeDeck specific fixes */
+  .hero-canvas-container {
+    height: 400px !important; 
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-padding {
+    padding: 40px 0 !important;
+  }
+  
+  .hero-canvas-container {
+    height: 300px !important;
+  }
+}
+
