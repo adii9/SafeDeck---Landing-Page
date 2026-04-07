@@ -136,31 +136,22 @@ export const fetchAudits = async () => {
  * Create a new Razorpay order.
  */
 export const createOrder = async ({ userId, email, plan }) => {
-  const payload = { user_id: userId, email, plan };
-  
   const response = await fetch('https://nbp2cx7kfh.execute-api.eu-north-1.amazonaws.com/default/create-order', {
     method: 'POST',
     headers: {
       'x-api-key': 'nC5x6EXSgB5h2pNSauKsH77VZivYjJAo7k0yVZqZ',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      httpMethod: 'POST',
-      body: JSON.stringify(payload),
-      headers: { 'Content-Type': 'application/json' },
-      requestContext: { identity: { sourceIp: '127.0.0.1' } },
-    }),
+    body: JSON.stringify({ user_id: userId, email, plan }),
   });
   if (!response.ok) throw new Error(`Failed to create order: ${response.status}`);
-  
+
   const responseData = await response.json();
   let data = responseData.body || responseData;
   if (typeof data === 'string') {
     try {
       data = JSON.parse(data);
     } catch {
-      // If it's not JSON (e.g. just a raw string order ID), keep it as a string.
-      // E.g., data = "order_xyz"
       data = { id: data };
     }
   }
@@ -189,7 +180,7 @@ export const verifyPayment = async ({ userId, razorpayOrderId, razorpayPaymentId
     }),
   });
   if (!response.ok) throw new Error(`Failed to verify payment: ${response.status}`);
-  
+
   const responseData = await response.json();
   let data = responseData.body || responseData;
   if (typeof data === 'string') {
@@ -199,5 +190,24 @@ export const verifyPayment = async ({ userId, razorpayOrderId, razorpayPaymentId
       data = { result: data };
     }
   }
+  return data;
+};
+
+/**
+ * Check if the user's subscription is active.
+ * Returns { is_active, subscription_status, plan, expires_at }
+ */
+export const getSubscriptionStatus = async (userId) => {
+  const response = await fetch('https://7knp3nowoi4muemvcc3gavxfuu0pibru.lambda-url.eu-north-1.on.aws/', {
+    method: 'POST',
+    headers: {
+      'x-api-key': 'nC5x6EXSgB5h2pNSauKsH77VZivYjJAo7k0yVZqZ',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ user_id: userId }),
+  });
+  if (!response.ok) throw new Error(`Failed to check subscription: ${response.status}`);
+
+  const data = await response.json();
   return data;
 };

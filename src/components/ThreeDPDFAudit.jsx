@@ -42,7 +42,9 @@ const DensePitchDeckSlide = () => {
       animate={{ opacity: 1, scale: 1, y: [0, -10, 0] }}
       transition={{ opacity: { duration: 0.5 }, scale: { duration: 0.5 }, y: { repeat: Infinity, duration: 6, ease: "easeInOut" } }}
       style={{
-        width: 'min(100%, 900px)',
+        width: '900px',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
         background: 'var(--bg-secondary)',
         backgroundImage: 'url(/quantum-bg.png)',
         backgroundSize: 'cover',
@@ -61,7 +63,7 @@ const DensePitchDeckSlide = () => {
     >
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(15,18,24,0.7) 0%, rgba(15,18,24,0.98) 100%)', zIndex: 0 }} />
 
-      <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
+      <div className="audit-board-title" style={{ position: 'relative', zIndex: 1, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
         <div>
           <h1 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.2rem)', margin: '0 0 0.2rem 0', fontWeight: 800, letterSpacing: '-0.02em', color: '#fff' }}>
             NEXUS QUANTUM
@@ -70,15 +72,15 @@ const DensePitchDeckSlide = () => {
             Traction & Financial Projections
           </div>
         </div>
-        <div style={{ textAlign: 'right' }}>
-           <div style={{ padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', color: '#ef4444', fontWeight: 600, fontSize: '0.7rem', display: 'inline-block', marginBottom: '0.5rem' }}>
+        <div className="audit-board-time-block">
+           <div style={{ padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', color: '#ef4444', fontWeight: 600, fontSize: 'clamp(0.65rem, 1.5vw, 0.7rem)', display: 'inline-block', marginBottom: '0.5rem', whiteSpace: 'nowrap' }}>
              STRICTLY CONFIDENTIAL
            </div>
            <div style={{ color: '#9ba1a6', fontSize: '0.7rem' }}>Slide 12 / 24</div>
         </div>
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+      <div className="responsive-grid" style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
         
         {/* Dense Text Section */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -107,7 +109,7 @@ const DensePitchDeckSlide = () => {
         {/* Dense Data Section */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+             <div className="audit-card-grid">
                 <div>
                   <div style={{ color: '#06b6d4', fontSize: '0.7rem', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Current ARR</div>
                   <div style={{ fontSize: '1.4rem', fontWeight: 700 }}>$1.2M</div>
@@ -171,7 +173,7 @@ const ThreeDPDFAudit = ({ onAnalyze }) => {
             alignItems: 'center',
             gap: '0.8rem',
             background: 'rgba(8, 10, 14, 0.85)',
-            padding: '1.2rem 2.5rem',
+            padding: 'clamp(1rem, 3vw, 1.2rem) clamp(1rem, 5vw, 2.5rem)',
             borderRadius: '20px',
             backdropFilter: 'blur(16px)',
             border: '1px solid rgba(255,255,255,0.08)',
@@ -193,7 +195,7 @@ const ThreeDPDFAudit = ({ onAnalyze }) => {
           <button 
              className="btn btn-primary pulse-glowing" 
              onClick={onAnalyze}
-             style={{ padding: '0.9rem 2.2rem', fontSize: '1.05rem', fontWeight: 600 }}
+             style={{ padding: 'clamp(0.7rem, 2vw, 0.9rem) clamp(1rem, 4vw, 2.2rem)', minHeight: '44px', fontSize: 'clamp(0.85rem, 3vw, 1.05rem)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
              Extract Data via SafeDeck AI
           </button>

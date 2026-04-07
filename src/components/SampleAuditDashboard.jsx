@@ -36,17 +36,17 @@ const mockData = {
 };
 
 const SectionData = ({ title, data }) => (
-  <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
-    <h3 style={{ fontSize: '1.1rem', marginBottom: '1.2rem', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+  <div className="glass-panel audit-card" style={{ padding: 'clamp(1rem, 3vw, 1.5rem)', marginBottom: '1.5rem' }}>
+    <h3 style={{ fontSize: 'clamp(1rem, 2.5vw, 1.1rem)', marginBottom: '1.2rem', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
       {title}
     </h3>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1.5rem' }}>
+    <div className="audit-card-grid">
       {Object.entries(data).map(([key, value]) => (
         <div key={key}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'capitalize', marginBottom: '0.4rem' }}>
+          <div style={{ fontSize: 'clamp(0.7rem, 1.5vw, 0.8rem)', color: 'var(--text-secondary)', textTransform: 'capitalize', marginBottom: '0.4rem' }}>
             {key.replace(/([A-Z])/g, ' $1').trim()}
           </div>
-          <div style={{ fontSize: '1.1rem', fontWeight: 600 }}>{value}</div>
+          <div style={{ fontSize: 'clamp(1rem, 2vw, 1.1rem)', fontWeight: 600 }}>{value}</div>
         </div>
       ))}
     </div>
@@ -60,30 +60,30 @@ const SampleAuditDashboard = ({ onBack }) => {
       <div style={{ position: 'absolute', top: '5%', left: '15%', width: '600px', height: '600px', background: 'var(--accent-blue)', filter: 'blur(250px)', opacity: 0.15, borderRadius: '50%', zIndex: -1 }} />
       <div style={{ position: 'absolute', bottom: '10%', right: '10%', width: '500px', height: '500px', background: 'var(--accent-purple)', filter: 'blur(250px)', opacity: 0.1, borderRadius: '50%', zIndex: -1 }} />
 
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-        <button className="btn btn-secondary" onClick={onBack} style={{ padding: '0.6rem 1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <header className="audit-board-header">
+        <button className="btn btn-secondary" onClick={onBack} style={{ padding: '0.8rem 1.2rem', minHeight: '44px', display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap' }}>
           <ArrowLeft size={16} /> Back to Homepage
         </button>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', color: 'var(--accent-green)', padding: '0.6rem 1.2rem', borderRadius: '20px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', color: 'var(--accent-green)', padding: '0.8rem 1.2rem', minHeight: '44px', borderRadius: '20px', fontSize: 'clamp(0.8rem, 2vw, 0.9rem)', display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap' }}>
              <CheckCircle size={16} /> Data Pushed to CRM
           </div>
         </div>
       </header>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="container" style={{ maxWidth: '1200px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2.5rem' }}>
+        <div className="audit-board-title">
           <div>
-            <h1 style={{ fontSize: '3rem', marginBottom: '0.2rem', letterSpacing: '-0.02em' }}>{mockData.company}</h1>
+            <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '0.2rem', letterSpacing: '-0.02em' }}>{mockData.company}</h1>
             <div style={{ color: 'var(--text-secondary)', fontSize: '1.15rem' }}>{mockData.sector}</div>
           </div>
-          <div style={{ textAlign: 'right' }}>
+          <div className="audit-board-time-block">
             <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Analyzed In</div>
             <div className="text-gradient" style={{ fontSize: '1.8rem', fontWeight: 700 }}>4.2 Seconds</div>
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1.2fr)', gap: '2rem' }}>
+        <div className="audit-board-grid">
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <SectionData title={<><TrendingUp size={18} /> Financials & Metrics</>} data={mockData.financials} />

@@ -35,7 +35,7 @@ const SampleAuditPage = () => {
             <button 
               className="btn btn-secondary" 
               onClick={handleBack}
-              style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 100 }}
+              style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 100, minHeight: '44px', padding: '0.8rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
               Exit Demo
             </button>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LogOut, FileText, CheckCircle, Clock, Search, ChevronRight, Loader, X, BarChart2, Users, Target } from 'lucide-react';
+import { LogOut, FileText, CheckCircle, Clock, Search, ChevronRight, Loader, X, BarChart2, Users, Target, AlertTriangle, CreditCard } from 'lucide-react';
 import { googleLogout } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import DeckModal from '../components/DeckModal';
+import { getSubscriptionStatus } from '../utils/api';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -11,6 +12,8 @@ const Dashboard = () => {
   const [decks, setDecks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDeck, setSelectedDeck] = useState(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null); // null = loading, 'active'/'inactive' = set
+  const [subCheckError, setSubCheckError] = useState('');
 
   // Read persisted user from localStorage (written by Hero login or Onboarding flow)
   const [currentUser] = useState(() => {
@@ -33,6 +36,31 @@ const Dashboard = () => {
   const fundRole = currentUser?.user?.role || null;
 
   useEffect(() => {
+    // 1. Check subscription status first
+    const checkSubscription = async () => {
+      if (!currentUser?.userId) {
+        setSubscriptionStatus('inactive');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const status = await getSubscriptionStatus(currentUser.userId);
+        setSubscriptionStatus(status.is_active ? 'active' : 'inactive');
+      } catch (err) {
+        console.error('Subscription check failed:', err);
+        setSubCheckError('Could not verify subscription. Showing limited access.');
+        setSubscriptionStatus('inactive'); // fail safe — show paywall
+      }
+    };
+
+    checkSubscription();
+  }, [currentUser]);
+
+  useEffect(() => {
+    // 2. Fetch decks only after subscription check resolves
+    if (subscriptionStatus === null) return; // still loading
+
     const fetchDecks = async () => {
       try {
         const response = await fetch('https://zh2feylzki.execute-api.eu-north-1.amazonaws.com/default/audits', {
@@ -190,9 +218,31 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {loading ? (
+        {loading || subscriptionStatus === null ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '4rem', color: 'var(--accent-purple)' }}>
-            <Loader size={40} className="spin-animation" style={{ animation: 'spin 2s linear infinite' }} />
+            <Loader size={40} style={{ animation: 'spin 2s linear infinite' }} />
+          </div>
+        ) : subscriptionStatus === 'inactive' ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '4rem 2rem', textAlign: 'center' }}>
+            <div style={{ width: '80px', height: '80px', borderRadius: '20px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem' }}>
+              <AlertTriangle size={36} color="var(--accent-purple)" />
+            </div>
+            <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Subscription Required</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: '480px', lineHeight: 1.6, marginBottom: '2.5rem' }}>
+              Your account doesn't have an active SafeDeck plan. Choose a plan to unlock unlimited pitch deck audits, AI-powered analysis, and CRM integration.
+            </p>
+            {subCheckError && (
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1.5rem', padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.04)', borderRadius: '8px' }}>
+                {subCheckError}
+              </div>
+            )}
+            <button
+              className="btn"
+              onClick={() => navigate('/pricing')}
+              style={{ padding: '1rem 2.5rem', background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))', border: 'none', borderRadius: '14px', color: 'white', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem' }}
+            >
+              <CreditCard size={18} /> View Plans
+            </button>
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
