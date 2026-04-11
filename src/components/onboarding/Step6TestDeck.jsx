@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { testDeckUpload } from '../../utils/api';
 
 const slideVariants = {
   initial: { opacity: 0, scale: 0.96 },
@@ -7,7 +8,16 @@ const slideVariants = {
   exit: { opacity: 0 },
 };
 
-const SIMULATED_RESULTS = {
+const getLocalStorageUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem('safedeck_user') || '{}');
+  } catch {
+    return {};
+  }
+};
+
+// Fallback mock data when real pipeline isn't available
+const FALLBACK_RESULTS = {
   promoter_name: 'Arjun Mehta',
   promoter_linkedin: 'linkedin.com/in/arjunmehta',
   revenue: '$480,000 ARR',
@@ -28,7 +38,7 @@ const SIMULATED_RESULTS = {
   ip_patents: '2 patents filed (pending)',
 };
 
-const SCORE_BREAKDOWN = [
+const FALLBACK_PILLARS = [
   { pillar: 'Founder Score', score: 78, color: 'var(--accent-cyan)' },
   { pillar: 'Market Size', score: 85, color: 'var(--accent-purple)' },
   { pillar: 'Traction', score: 72, color: '#f59e0b' },
@@ -57,6 +67,8 @@ const Step6TestDeck = ({ onNext, data }) => {
   const [file, setFile] = useState(null);
   const [stage, setStage] = useState('idle'); // idle | parsing | extracting | scoring | results
   const [progress, setProgress] = useState(0);
+  const [pipelineResult, setPipelineResult] = useState(null); // { pillars, overallScore, extracted }
+  const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
 
   const stages = [
@@ -68,29 +80,59 @@ const Step6TestDeck = ({ onNext, data }) => {
 
   const runPipeline = async (selectedFile) => {
     setFile(selectedFile);
+    setError(null);
     setStage('parsing');
     setProgress(0);
+    setPipelineResult(null);
 
-    const stageDurations = { parsing: 2200, extracting: 3000, scoring: 1800, results: 1200 };
+    const stageDurations = { parsing: 1500, extracting: 3000, scoring: 2000, results: 1000 };
 
-    for (const [id, duration] of Object.entries(stageDurations)) {
-      await new Promise(resolve => {
-        const start = Date.now();
-        const interval = setInterval(() => {
-          const elapsed = Date.now() - start;
-          const stageProgress = Math.min(100, (elapsed / duration) * 100);
-          setProgress(stageProgress);
-          if (elapsed >= duration) {
-            clearInterval(interval);
-            resolve();
-          }
-        }, 50);
-      });
-      if (id !== 'results') {
-        setStage(Object.keys(stageDurations)[Object.keys(stageDurations).indexOf(id) + 1]);
+    try {
+      // Animate through stages
+      for (const [id, duration] of Object.entries(stageDurations)) {
+        await new Promise(resolve => {
+          const start = Date.now();
+          const interval = setInterval(() => {
+            const elapsed = Date.now() - start;
+            const stageProgress = Math.min(100, (elapsed / duration) * 100);
+            setProgress(stageProgress);
+            if (elapsed >= duration) {
+              clearInterval(interval);
+              resolve();
+            }
+          }, 50);
+        });
+        if (id !== 'results') {
+          setStage(Object.keys(stageDurations)[Object.keys(stageDurations).indexOf(id) + 1]);
+        }
       }
+
+      setStage('results');
+      setProgress(100);
+
+      // Get tenant slug from onboarding data or localStorage
+      const user = getLocalStorageUser();
+      const tenantSlug = data?.safedeckEmail
+        ? data.safedeckEmail.split('@')[0].replace('.com', '')
+        : user?.user?.safedeck_email?.split('@')[0] || 'default';
+
+      // Call the real CrewAI pipeline
+      const result = await testDeckUpload({
+        tenantSlug,
+        companyName: selectedFile.name.replace('.pdf', ''),
+        pdfFile: selectedFile,
+      });
+
+      // Parse CrewAI response into displayable format
+      const parsed = parsePipelineResult(result);
+      setPipelineResult(parsed);
+    } catch (err) {
+      console.error('Pipeline error:', err);
+      setError(err.message || 'Pipeline call failed. Showing simulated results.');
+      // Still show results with fallback data
+      const fallbackScore = Math.round(FALLBACK_PILLARS.reduce((s, p) => s + p.score, 0) / FALLBACK_PILLARS.length);
+      setPipelineResult({ pillars: FALLBACK_PILLARS, overallScore: fallbackScore, extracted: FALLBACK_RESULTS });
     }
-    setStage('results');
   };
 
   const handleDrop = (e) => {
@@ -107,7 +149,9 @@ const Step6TestDeck = ({ onNext, data }) => {
     if (selected) runPipeline(selected);
   };
 
-  const overallScore = Math.round(SCORE_BREAKDOWN.reduce((s, p) => s + p.score, 0) / SCORE_BREAKDOWN.length);
+  const pillars = pipelineResult?.pillars || FALLBACK_PILLARS;
+  const overallScore = pipelineResult?.overallScore || Math.round(pillars.reduce((s, p) => s + p.score, 0) / pillars.length);
+  const extracted = pipelineResult?.extracted || FALLBACK_RESULTS;
 
   return (
     <motion.div variants={slideVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.4 }}>
@@ -163,7 +207,8 @@ const Step6TestDeck = ({ onNext, data }) => {
         <div style={{ marginBottom: '1.5rem' }}>
           <div style={{ marginBottom: '1.25rem' }}>
             {stages.map((s, i) => {
-              const isDone = stages.findIndex(x => x.id === stage) > i;
+              const currentIdx = stages.findIndex(x => x.id === stage);
+              const isDone = currentIdx > i;
               const isActive = s.id === stage;
               return (
                 <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem', opacity: isDone ? 0.5 : 1, transition: 'opacity 0.3s' }}>
@@ -194,7 +239,7 @@ const Step6TestDeck = ({ onNext, data }) => {
           </div>
 
           {file && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid 'rgba(255,255,255,0.06)', borderRadius: '10px' }}>
               <span style={{ fontSize: '1.1rem' }}>📄</span>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{file.name}</div>
@@ -224,15 +269,21 @@ const Step6TestDeck = ({ onNext, data }) => {
               <div style={{ fontSize: '4rem', fontWeight: 800, background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-purple))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', lineHeight: 1 }}>
                 {overallScore}
               </div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.8rem', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: '20px', color: '#f59e0b', fontSize: '0.78rem', fontWeight: 600, marginTop: '0.5rem' }}>
-                🟡 Above threshold — worth a second look
-              </div>
+              {error ? (
+                <div style={{ padding: '0.5rem 1rem', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: '8px', color: '#f59e0b', fontSize: '0.78rem', marginTop: '0.5rem' }}>
+                  ⚠️ Live pipeline failed — showing simulated. Error: {error}
+                </div>
+              ) : (
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.8rem', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: '20px', color: '#f59e0b', fontSize: '0.78rem', fontWeight: 600, marginTop: '0.5rem' }}>
+                  🟡 Above threshold — worth a second look
+                </div>
+              )}
             </div>
 
             {/* Score Breakdown */}
             <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '14px', padding: '1.25rem', marginBottom: '1.25rem' }}>
               <div style={{ fontWeight: 700, fontSize: '0.88rem', marginBottom: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Score Breakdown</div>
-              {SCORE_BREAKDOWN.map(p => <ScoreBar key={p.pillar} {...p} />)}
+              {pillars.map(p => <ScoreBar key={p.pillar} pillar={p.pillar} score={p.score} color={p.color} />)}
               <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '0.75rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Overall</span>
                 <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--accent-cyan)' }}>{overallScore}/100</span>
@@ -243,13 +294,13 @@ const Step6TestDeck = ({ onNext, data }) => {
             <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '14px', padding: '1.25rem', marginBottom: '1.25rem' }}>
               <div style={{ fontWeight: 700, fontSize: '0.88rem', marginBottom: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Extracted Data</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                {Object.entries(SIMULATED_RESULTS).slice(0, 10).map(([key, val]) => (
+                {Object.entries(extracted).slice(0, 10).map(([key, val]) => (
                   <div key={key} style={{ padding: '0.5rem 0.65rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
                     <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', textTransform: 'capitalize', marginBottom: '0.15rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {key.replace(/_/g, ' ')}
                     </div>
                     <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {val}
+                      {String(val).slice(0, 50)}
                     </div>
                   </div>
                 ))}
@@ -270,7 +321,7 @@ const Step6TestDeck = ({ onNext, data }) => {
               <div>
                 <div style={{ fontWeight: 700, fontSize: '0.88rem', color: '#10b981' }}>Sheet populated</div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                  {data.sheetMappingType === 'custom' && data.fieldMappings
+                  {data?.sheetMappingType === 'custom' && data?.fieldMappings
                     ? 'Your custom columns have been filled with extracted data.'
                     : 'SafeDeck standard 53-column sheet updated with all extracted fields.'}
                 </div>
@@ -320,5 +371,43 @@ const Step6TestDeck = ({ onNext, data }) => {
     </motion.div>
   );
 };
+
+// Parse CrewAI pipeline response into displayable format
+function parsePipelineResult(result) {
+  // Lambda returns { statusCode, body: "{...}" }
+  let body = result;
+  if (typeof result === 'object' && result.body) {
+    try {
+      body = typeof result.body === 'string' ? JSON.parse(result.body) : result.body;
+    } catch {
+      body = result;
+    }
+  }
+
+  const audit = body.audit_result || body;
+
+  // Extract scores
+  const pillars = body.rating_breakdown || [
+    { pillar: 'Founder Score', score: body.founder_score || body.founderScore || 0, color: 'var(--accent-cyan)' },
+    { pillar: 'Market Size', score: body.market_score || body.marketScore || 0, color: 'var(--accent-purple)' },
+    { pillar: 'Traction', score: body.traction_score || body.tractionScore || 0, color: '#f59e0b' },
+    { pillar: 'Team Strength', score: body.team_score || body.teamScore || 0, color: '#ec4899' },
+  ];
+
+  const overallScore = body.composite_score || body.overall_score || body.score ||
+    Math.round(pillars.reduce((s, p) => s + (p.score || 0), 0) / pillars.length);
+
+  // Extract fields from audit result
+  const extracted = {};
+  if (audit && typeof audit === 'object') {
+    Object.entries(audit).forEach(([key, val]) => {
+      if (val !== null && val !== undefined && val !== '' && key !== 'rating_breakdown') {
+        extracted[key] = typeof val === 'object' ? JSON.stringify(val).slice(0, 100) : String(val);
+      }
+    });
+  }
+
+  return { pillars, overallScore, extracted };
+}
 
 export default Step6TestDeck;
