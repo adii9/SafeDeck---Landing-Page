@@ -25,13 +25,18 @@ const CallToAction = () => {
           className="glass-panel mobile-p-4"
           style={{ padding: '4rem 2rem', textAlign: 'center', border: '1px solid var(--accent-purple)' }}
         >
-          <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '1.5rem' }}>Ready to Scale Your <span className="text-gradient">Deal Flow?</span></h2>
-          <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto 3rem auto' }}>
-            Stop doing manual grunt work. Start finding the best founders faster than the competition.
+          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', marginBottom: '1.5rem', lineHeight: 1.2 }}>
+            Your Deal Intelligence Is Only As Good As <span className="text-gradient">How Fast It Reaches Your Team.</span>
+          </h2>
+          <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto 3rem auto', lineHeight: 1.6 }}>
+            SafeDeck works where you work — in your inbox, your CRM, your Slack. Not in a separate browser tab you'll forget to open.
           </p>
           <div className="mobile-btn-stack" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <button className="btn btn-primary pulse-glowing" onClick={() => window.location.href = '/pricing'} style={{ fontSize: '1.1rem', padding: '1rem 2rem' }}>
-              Select Your Plan
+            <button className="btn btn-primary pulse-glowing" onClick={() => window.location.href = '/onboarding?paid=true'} style={{ fontSize: '1.1rem', padding: '1rem 2rem' }}>
+              Start Free Trial — No Payment Required
+            </button>
+            <button className="btn btn-secondary" onClick={() => window.location.href = '/sample-audit'} style={{ fontSize: '1.1rem', padding: '1rem 2rem' }}>
+              See It Working in Your CRM
             </button>
           </div>
         </motion.div>

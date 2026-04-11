@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LogOut, FileText, CheckCircle, Clock, Search, ChevronRight, Loader, X, BarChart2, Users, Target, AlertTriangle, CreditCard } from 'lucide-react';
+import { LogOut, FileText, CheckCircle, Clock, Search, ChevronRight, Loader, BarChart2, Users, Target } from 'lucide-react';
 import { googleLogout } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import DeckModal from '../components/DeckModal';
-import { getSubscriptionStatus } from '../utils/api';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -12,8 +11,6 @@ const Dashboard = () => {
   const [decks, setDecks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDeck, setSelectedDeck] = useState(null);
-  const [subscriptionStatus, setSubscriptionStatus] = useState(null); // null = loading, 'active'/'inactive' = set
-  const [subCheckError, setSubCheckError] = useState('');
 
   // Read persisted user from localStorage (written by Hero login or Onboarding flow)
   const [currentUser] = useState(() => {
@@ -36,31 +33,6 @@ const Dashboard = () => {
   const fundRole = currentUser?.user?.role || null;
 
   useEffect(() => {
-    // 1. Check subscription status first
-    const checkSubscription = async () => {
-      if (!currentUser?.userId) {
-        setSubscriptionStatus('inactive');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const status = await getSubscriptionStatus(currentUser.userId);
-        setSubscriptionStatus(status.is_active ? 'active' : 'inactive');
-      } catch (err) {
-        console.error('Subscription check failed:', err);
-        setSubCheckError('Could not verify subscription. Showing limited access.');
-        setSubscriptionStatus('inactive'); // fail safe — show paywall
-      }
-    };
-
-    checkSubscription();
-  }, [currentUser]);
-
-  useEffect(() => {
-    // 2. Fetch decks only after subscription check resolves
-    if (subscriptionStatus === null) return; // still loading
-
     const fetchDecks = async () => {
       try {
         const response = await fetch('https://zh2feylzki.execute-api.eu-north-1.amazonaws.com/default/audits', {
@@ -189,6 +161,45 @@ const Dashboard = () => {
         </div>
       </header>
 
+      {/* Free Trial Banner */}
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto 1.5rem',
+        padding: '0.85rem 1.25rem',
+        background: 'rgba(6, 182, 212, 0.08)',
+        border: '1px solid rgba(6, 182, 212, 0.25)',
+        borderRadius: '12px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '1rem',
+        flexWrap: 'wrap',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <span style={{ fontSize: '1.1rem' }}>🎁</span>
+          <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+            <strong style={{ color: 'var(--accent-cyan)' }}>30-day free trial</strong> active — no payment required today. Your evaluation criteria, sheet mapping, and inbox routing are all configured.
+          </span>
+        </div>
+        <button
+          onClick={() => navigate('/pricing')}
+          style={{
+            padding: '0.4rem 1rem',
+            background: 'rgba(6, 182, 212, 0.12)',
+            border: '1px solid rgba(6, 182, 212, 0.3)',
+            borderRadius: '8px',
+            color: 'var(--accent-cyan)',
+            fontSize: '0.82rem',
+            fontWeight: 600,
+            cursor: 'pointer',
+            fontFamily: 'Inter, sans-serif',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          View Plans →
+        </button>
+      </div>
+
       <main className="container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div className="responsive-flex-col" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', gap: '1.5rem' }}>
           <div>
@@ -218,39 +229,17 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {loading || subscriptionStatus === null ? (
+        {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '4rem', color: 'var(--accent-purple)' }}>
             <Loader size={40} style={{ animation: 'spin 2s linear infinite' }} />
           </div>
-        ) : subscriptionStatus === 'inactive' ? (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '4rem 2rem', textAlign: 'center' }}>
-            <div style={{ width: '80px', height: '80px', borderRadius: '20px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem' }}>
-              <AlertTriangle size={36} color="var(--accent-purple)" />
-            </div>
-            <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Subscription Required</h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: '480px', lineHeight: 1.6, marginBottom: '2.5rem' }}>
-              Your account doesn't have an active SafeDeck plan. Choose a plan to unlock unlimited pitch deck audits, AI-powered analysis, and CRM integration.
-            </p>
-            {subCheckError && (
-              <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1.5rem', padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.04)', borderRadius: '8px' }}>
-                {subCheckError}
-              </div>
-            )}
-            <button
-              className="btn"
-              onClick={() => navigate('/pricing')}
-              style={{ padding: '1rem 2.5rem', background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))', border: 'none', borderRadius: '14px', color: 'white', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem' }}
-            >
-              <CreditCard size={18} /> View Plans
-            </button>
-          </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-            {decks.filter(deck => 
-               deck.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+            {decks.filter(deck =>
+               deck.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                deck.sector.toLowerCase().includes(searchTerm.toLowerCase())
             ).map((deck, index) => (
-              <motion.div 
+              <motion.div
                 key={deck.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -270,12 +259,12 @@ const Dashboard = () => {
                   <div style={{ padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
                     <FileText size={24} color="var(--accent-cyan)" />
                   </div>
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '0.3rem', 
-                    fontSize: '0.8rem', 
-                    padding: '0.3rem 0.6rem', 
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.3rem',
+                    fontSize: '0.8rem',
+                    padding: '0.3rem 0.6rem',
                     borderRadius: '12px',
                     background: `rgba(${deck.status === 'Completed' ? '56, 189, 248' : '168, 85, 247'}, 0.1)`,
                     color: getStatusColor(deck.status)
@@ -284,10 +273,10 @@ const Dashboard = () => {
                     {deck.status}
                   </div>
                 </div>
-                
+
                 <h3 style={{ fontSize: '1.2rem', marginBottom: '0.25rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{deck.name}</h3>
                 <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>{deck.sector}</div>
-                
+
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                   <div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>Revenue</div>
@@ -301,7 +290,7 @@ const Dashboard = () => {
                 </div>
               </motion.div>
             ))}
-            
+
             {!loading && decks.length === 0 && (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
                 No pitch decks found matching your search.

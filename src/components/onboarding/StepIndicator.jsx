@@ -1,6 +1,6 @@
 import React from 'react';
 
-const steps = ['Account', 'Profile', 'Sheets', 'Drive', 'Email', 'Done'];
+const steps = ['Account', 'Profile', 'Criteria', 'Sheet Map', 'Data', 'Test Deck', 'Dashboard'];
 
 // completedSteps: optional map of {stepNum: bool} for server-confirmed completions
 const StepIndicator = ({ currentStep, completedSteps = {} }) => {
@@ -53,7 +53,7 @@ const StepIndicator = ({ currentStep, completedSteps = {} }) => {
             {idx < steps.length - 1 && (
               <div style={{
                 height: '2px',
-                width: 'clamp(12px, 2.5vw, 32px)',
+                width: 'clamp(8px, 1.8vw, 24px)',
                 marginBottom: '1.2rem',
                 background: currentStep > stepNum
                   ? 'var(--accent-cyan)'

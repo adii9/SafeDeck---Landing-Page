@@ -12,12 +12,11 @@ const Pricing = () => {
       period: 'per month',
       popular: false,
       features: [
-        { label: 'Pitch Decks', value: '40 decks included' },
-        { label: 'Additional decks', value: '₹600 / $7.50 per deck' },
-        { label: 'AI Audit', value: 'Full CrewAI audit (team, market, financials)' },
-        { label: 'CRM Sync', value: 'Google Sheets only' },
-        { label: 'Email Inbox', value: '1 inbox connected' },
-        { label: 'Audit Reports', value: 'Standard format' },
+        { label: 'Deals Tracked', value: 'Up to 40 deals' },
+        { label: 'Additional deals', value: '₹600 / $7.50 per deal' },
+        { label: 'Users', value: '3 users included' },
+        { label: 'CRM Sync', value: 'Full CRM sync' },
+        { label: 'Integrations', value: 'n8n integration' },
       ],
       capabilities: [
         { label: 'Red Flag Detection', supported: true },
@@ -32,12 +31,11 @@ const Pricing = () => {
       period: 'per month',
       popular: true,
       features: [
-        { label: 'Pitch Decks', value: '120 decks included' },
-        { label: 'Additional decks', value: '₹400 / $5 per deck' },
-        { label: 'AI Audit', value: 'Full CrewAI audit + detailed red flags report' },
-        { label: 'CRM Sync', value: 'Sheets + Affinity + HubSpot' },
-        { label: 'Email Inbox', value: 'Up to 3 inboxes connected' },
-        { label: 'Audit Reports', value: 'Detailed format with comparison views' },
+        { label: 'Deals Tracked', value: 'Up to 120 deals' },
+        { label: 'Additional deals', value: '₹400 / $5 per deal' },
+        { label: 'Users', value: '8 users included' },
+        { label: 'Analysis', value: 'Priority verification' },
+        { label: 'Setup', value: 'Dedicated onboarding' },
       ],
       capabilities: [
         { label: 'Red Flag Detection', supported: true },
@@ -52,12 +50,11 @@ const Pricing = () => {
       period: 'per month',
       popular: false,
       features: [
-        { label: 'Pitch Decks', value: 'Unlimited' },
-        { label: 'Additional decks', value: 'Included' },
-        { label: 'AI Audit', value: 'Custom configuration + white-label reports' },
-        { label: 'CRM Sync', value: 'Salesforce + Affinity + HubSpot + Custom API' },
-        { label: 'Email Inbox', value: 'Unlimited inboxes' },
-        { label: 'Audit Reports', value: 'Custom branded PDF reports' },
+        { label: 'Deals Tracked', value: 'Unlimited' },
+        { label: 'Additional deals', value: 'Included' },
+        { label: 'Users', value: 'Unlimited users' },
+        { label: 'Integrations', value: 'Custom integrations' },
+        { label: 'Support', value: 'SLA + priority support' },
       ],
       capabilities: [
         { label: 'Red Flag Detection', supported: true },
@@ -81,7 +78,7 @@ const Pricing = () => {
 
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', 
           gap: '2rem',
           alignItems: 'center'
         }}>
@@ -92,7 +89,7 @@ const Pricing = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
               key={i}
-              className={`glass-panel ${plan.popular ? 'pulse-glowing' : ''}`}
+              className={`glass-panel mobile-p-4 ${plan.popular ? 'pulse-glowing mobile-no-scale' : ''}`}
               style={{
                 padding: '2.5rem',
                 position: 'relative',
@@ -164,7 +161,7 @@ const Pricing = () => {
                 style={{ width: '100%' }}
                 onClick={() => navigate('/pricing')}
               >
-                Get Started
+                Start Tracking Deals
               </button>
             </motion.div>
           ))}
@@ -185,8 +182,8 @@ const Pricing = () => {
           }}
         >
           <p style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)', lineHeight: '1.6' }}>
-            <span style={{ color: 'var(--accent-purple)', fontWeight: 'bold' }}>SafeDeck replaces a full-time deal intake analyst.</span><br /> 
-            For the price of one junior hire, you get unlimited pitch deck audits with zero manual work — delivered to your CRM automatically.
+            <span style={{ color: 'var(--accent-purple)', fontWeight: 'bold' }}>Pricing based on deals tracked — not seats or audits.</span><br /> 
+            Most funds break even vs. analyst time within the first month.
           </p>
         </motion.div>
       </div>

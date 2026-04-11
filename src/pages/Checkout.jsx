@@ -262,9 +262,9 @@ const Checkout = () => {
           alignItems: 'center',
         }}>
           <div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Total Due Today</div>
-            <div style={{ fontSize: '2.6rem', fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text-primary)' }}>{plan.priceLabel}</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.1rem' }}>{plan.period} · billed monthly</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Your Trial</div>
+            <div style={{ fontSize: '2.6rem', fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text-primary)' }}>FREE</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.1rem' }}>1 month · no charges today</div>
           </div>
           <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: `${plan.glow}`, border: `1px solid ${plan.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CreditCard size={24} color={plan.color} />
@@ -341,22 +341,19 @@ const Checkout = () => {
               <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Signed in as <strong style={{ color: 'white' }}>{user.email}</strong></span>
             </div>
             <motion.button
-              onClick={handlePayment}
-              disabled={loading}
-              whileHover={{ scale: loading ? 1 : 1.02, boxShadow: loading ? undefined : '0 12px 32px rgba(139, 92, 246, 0.5)' }}
-              whileTap={{ scale: loading ? 1 : 0.98 }}
+              onClick={() => navigate('/onboarding?paid=true')}
+              whileHover={{ scale: 1.02, boxShadow: '0 12px 32px rgba(139, 92, 246, 0.5)' }}
+              whileTap={{ scale: 0.98 }}
               style={{
                 width: '100%',
                 padding: '1rem',
-                background: loading
-                  ? 'rgba(139, 92, 246, 0.4)'
-                  : 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))',
+                background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))',
                 color: 'white',
                 border: 'none',
                 borderRadius: '14px',
                 fontSize: '1.05rem',
                 fontWeight: 700,
-                cursor: loading ? 'not-allowed' : 'pointer',
+                cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
                 boxShadow: '0 4px 20px rgba(139, 92, 246, 0.35)',
                 transition: 'background 0.3s ease',
@@ -366,17 +363,8 @@ const Checkout = () => {
                 gap: '0.6rem',
               }}
             >
-              {loading ? (
-                <>
-                  <div style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                  Opening Payment...
-                </>
-              ) : (
-                <>
-                  <Lock size={16} />
-                  Pay {plan.priceLabel} Securely
-                </>
-              )}
+              <Lock size={16} />
+              Start 1-Month Free Trial
             </motion.button>
           </div>
         )}
@@ -384,7 +372,7 @@ const Checkout = () => {
         {/* Security Note */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginBottom: '1rem' }}>
           <ShieldCheck size={13} color="var(--accent-green)" />
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Secured by Razorpay · 256-bit SSL encryption</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>1-month free trial · no payment required today</span>
         </div>
 
         {/* Cancelled Message */}
@@ -403,7 +391,7 @@ const Checkout = () => {
               }}
             >
               <p style={{ color: '#ef4444', fontSize: '0.85rem', margin: 0, lineHeight: 1.6 }}>
-                Payment cancelled — no charges made. Reach out to{' '}
+                Trial not started yet. Reach out to{' '}
                 <a href="mailto:help@safedeck.ai" style={{ color: '#ef4444', fontWeight: 600 }}>
                   help@safedeck.ai
                 </a>
@@ -416,8 +404,7 @@ const Checkout = () => {
 
       {/* Footer note */}
       <p style={{ marginTop: '1.5rem', color: 'var(--text-secondary)', fontSize: '0.78rem', textAlign: 'center', position: 'relative', zIndex: 1 }}>
-        By completing payment you agree to SafeDeck's{' '}
-        <span style={{ color: 'var(--accent-cyan)', cursor: 'pointer' }}>Terms of Service</span> ·{' '}
+        After your trial, you'll be asked to choose a plan. ·{' '}
         Need help? <a href="mailto:help@safedeck.ai" style={{ color: 'var(--accent-cyan)', textDecoration: 'none' }}>help@safedeck.ai</a>
       </p>
     </div>

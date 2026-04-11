@@ -57,7 +57,7 @@ const Hero = () => {
         }));
 
         // Navigate after everything succeeds
-        navigate('/dashboard');
+        navigate('/onboarding?paid=true');
       } catch (error) {
         console.error('Authentication process failed:', error);
       }
@@ -120,20 +120,20 @@ const Hero = () => {
             gap: '0.5rem',
             width: 'fit-content'
            }}>
-            <Mail size={16} /> End-to-End Deal Flow Automation
+            Deal Intelligence · CRM Integration · Continuous Monitoring
           </div>
           <h1 style={{ lineHeight: '1.15' }}>
-            From <span className="text-gradient">Inbox to CRM</span> Without Lifting a Finger.
+            <span className="text-gradient">Your Deal Intelligence Layer.</span> Always On.
           </h1>
           <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', marginBottom: '2.5rem', maxWidth: '540px' }}>
-            The moment a pitch hits your email, SafeDeck's AI intercepts it. It reads the deck, extracts all 53 vital data points, and perfectly populates your Excel sheet or Custom CRM. Zero manual entry.
+            SafeDeck continuously reads every pitch deck, meeting note, and founder update — and feeds structured, verified deal intelligence directly into your CRM, your sheets, and your deal team. No manual entry. No context switching.
           </p>
           <div className="mobile-btn-stack" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-             <button className="btn btn-primary pulse-glowing" onClick={() => navigate('/pricing')}>
-                Get Started <Zap size={18} />
+             <button className="btn btn-primary pulse-glowing" onClick={() => window.location.href = '#integrations'}>
+                See How It Integrates <Zap size={18} />
              </button>
              <button className="btn btn-secondary" onClick={() => navigate('/sample-audit')}>
-                View Sample Audit
+                View Sample Deal Profile
              </button>
           </div>
         </motion.div>

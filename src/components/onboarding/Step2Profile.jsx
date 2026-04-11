@@ -33,13 +33,51 @@ const labelStyle = {
 
 const volumeOptions = ['1–20', '20–50', '50–100', '100+'];
 
+const SECTORS = [
+  'Climate Tech', 'Health', 'Agri', 'FinTech', 'EdTech',
+  'Consumer', 'Deep Tech', 'Enterprise', 'Other',
+];
+
+const STAGES = ['Pre-seed', 'Seed', 'Series A', 'Series B'];
+
+const MultiSelect = ({ label, options, selected, onToggle }) => (
+  <div>
+    <label style={labelStyle}>{label}</label>
+    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+      {options.map(opt => {
+        const isSelected = selected.includes(opt);
+        return (
+          <button
+            key={opt}
+            onClick={() => onToggle(opt)}
+            style={{
+              padding: '0.45rem 0.85rem',
+              borderRadius: '8px',
+              border: '1px solid',
+              borderColor: isSelected ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.1)',
+              background: isSelected ? 'rgba(6, 182, 212, 0.12)' : 'rgba(255,255,255,0.03)',
+              color: isSelected ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+              fontSize: '0.85rem',
+              fontWeight: isSelected ? 600 : 400,
+              cursor: 'pointer',
+              transition: 'all 0.18s ease',
+              fontFamily: 'Inter, sans-serif',
+            }}
+          >
+            {isSelected ? '✓ ' : ''}{opt}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+);
+
 const Step2Profile = ({ onNext, data, setData, user }) => {
   const [focused, setFocused] = useState(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const isReturning = user && !user.isNewUser;
 
-  // Pre-fill from the saved user record on first render if fields are blank
   React.useEffect(() => {
     const saved = user?.user || {};
     setData(prev => ({
@@ -47,10 +85,29 @@ const Step2Profile = ({ onNext, data, setData, user }) => {
       role: prev.role || saved.role || '',
       website: prev.website || saved.website || '',
       volume: prev.volume || saved.decks_per_month || '',
+      thesis: prev.thesis || saved.thesis || '',
+      sectors: prev.sectors || saved.sectors || [],
+      stages: prev.stages || saved.stages || [],
     }));
   }, [user]);
 
   const handleChange = (key, val) => setData(prev => ({ ...prev, [key]: val }));
+
+  const toggleSector = (sector) =>
+    setData(prev => ({
+      ...prev,
+      sectors: prev.sectors.includes(sector)
+        ? prev.sectors.filter(s => s !== sector)
+        : [...prev.sectors, sector],
+    }));
+
+  const toggleStage = (stage) =>
+    setData(prev => ({
+      ...prev,
+      stages: prev.stages.includes(stage)
+        ? prev.stages.filter(s => s !== stage)
+        : [...prev.stages, stage],
+    }));
 
   const isValid = data.fundName && data.role && data.volume;
 
@@ -66,6 +123,9 @@ const Step2Profile = ({ onNext, data, setData, user }) => {
         role: data.role,
         website: data.website,
         volume: data.volume,
+        thesis: data.thesis,
+        sectors: data.sectors,
+        stages: data.stages,
       });
       onNext();
     } catch (err) {
@@ -78,7 +138,6 @@ const Step2Profile = ({ onNext, data, setData, user }) => {
 
   return (
     <motion.div variants={slideVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.35 }}>
-      {/* User greeting + returning badge */}
       {user && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: isReturning ? 'rgba(16, 185, 129, 0.06)' : 'rgba(6, 182, 212, 0.05)', border: `1px solid ${isReturning ? 'rgba(16, 185, 129, 0.2)' : 'rgba(6, 182, 212, 0.15)'}`, borderRadius: '10px', marginBottom: '1.5rem' }}>
           {user.picture && <img src={user.picture} alt="" style={{ width: '32px', height: '32px', borderRadius: '50%' }} />}
@@ -102,6 +161,7 @@ const Step2Profile = ({ onNext, data, setData, user }) => {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+        {/* Fund Name */}
         <div>
           <label style={labelStyle}>Fund Name <span style={{ color: 'var(--accent-red)' }}>*</span></label>
           <input
@@ -114,6 +174,7 @@ const Step2Profile = ({ onNext, data, setData, user }) => {
           />
         </div>
 
+        {/* Role */}
         <div>
           <label style={labelStyle}>Your Role <span style={{ color: 'var(--accent-red)' }}>*</span></label>
           <input
@@ -126,6 +187,7 @@ const Step2Profile = ({ onNext, data, setData, user }) => {
           />
         </div>
 
+        {/* Website */}
         <div>
           <label style={labelStyle}>Fund Website</label>
           <input
@@ -138,6 +200,7 @@ const Step2Profile = ({ onNext, data, setData, user }) => {
           />
         </div>
 
+        {/* Volume */}
         <div>
           <label style={labelStyle}>Pitch decks received per month <span style={{ color: 'var(--accent-red)' }}>*</span></label>
           <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap' }}>
@@ -164,6 +227,41 @@ const Step2Profile = ({ onNext, data, setData, user }) => {
             ))}
           </div>
         </div>
+
+        {/* Divider */}
+        <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '0.25rem 0' }} />
+
+        {/* Fund Thesis */}
+        <div>
+          <label style={labelStyle}>Fund Thesis <span style={{ color: 'rgba(255,255,255,0.35)', fontWeight: 400, textTransform: 'none' }}>— what you invest in and why</span></label>
+          <textarea
+            style={{ ...inputStyle(focused, 'thesis'), resize: 'vertical', minHeight: '80px', lineHeight: 1.5 }}
+            placeholder="e.g. We invest in climate tech solving industrial decarbonisation at Series A — focused on hard tech with proven unit economics"
+            value={data.thesis || ''}
+            onChange={e => handleChange('thesis', e.target.value)}
+            onFocus={() => setFocused('thesis')}
+            onBlur={() => setFocused(null)}
+          />
+          <div style={{ textAlign: 'right', fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+            {(data.thesis || '').length} / 500
+          </div>
+        </div>
+
+        {/* Sectors */}
+        <MultiSelect
+          label="Investment Focus — Sectors"
+          options={SECTORS}
+          selected={data.sectors || []}
+          onToggle={toggleSector}
+        />
+
+        {/* Stages */}
+        <MultiSelect
+          label="Investment Focus — Stages"
+          options={STAGES}
+          selected={data.stages || []}
+          onToggle={toggleStage}
+        />
       </div>
 
       {error && (

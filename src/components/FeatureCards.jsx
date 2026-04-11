@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
-import { Bot, Zap, MailPlus, DatabaseZap } from 'lucide-react';
+import { Bot, Database, Activity, Workflow, Shield, SearchCheck } from 'lucide-react';
 
 const TiltCard = ({ icon: Icon, title, description }) => {
   const ref = useRef(null);
@@ -31,10 +31,13 @@ const TiltCard = ({ icon: Icon, title, description }) => {
         rotateX,
         rotateY,
         transformStyle: 'preserve-3d',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
       }}
-      className="glass-panel"
+      className="glass-panel mobile-p-4"
     >
-      <div style={{ padding: '2.5rem', transform: 'translateZ(30px)' }}>
+      <div style={{ padding: '2.5rem', transform: 'translateZ(30px)', flex: 1 }}>
         <div style={{ 
           width: '50px', height: '50px', 
           borderRadius: '12px', 
@@ -56,24 +59,34 @@ const TiltCard = ({ icon: Icon, title, description }) => {
 const FeatureCards = () => {
   const features = [
     {
-      icon: MailPlus,
-      title: 'Email Inbox Intercept',
-      description: 'Connect your deal flow email once. We automatically catch, parse, and process every new PDF pitch deck the millisecond it arrives.'
+      icon: Activity,
+      title: 'Continuous Deal Monitoring',
+      description: 'Track every pitch deck, follow-up, and founder update across your entire deal flow — not a one-time snapshot.'
     },
     {
-      icon: DatabaseZap,
-      title: 'Universal CRM Plugins',
-      description: 'Push highly-structured audit data directly to Affinity, Salesforce, HubSpot, customized Excel sheets, or via raw API.'
+      icon: Database,
+      title: 'CRM-Native',
+      description: 'Data goes directly to HubSpot, Affinity, or any CRM — not a separate dashboard nobody opens.'
     },
     {
       icon: Bot,
-      title: 'Advanced AI Agents',
-      description: 'Multiple specialized CrewAI agents work in tandem to evaluate the team, market size, and financials totally independently.'
+      title: 'AI That Shows Its Work',
+      description: 'Every data point is traceable: here\'s what we read, here\'s what we found, here\'s what we couldn\'t verify.'
     },
     {
-      icon: Zap,
-      title: 'Lightning Fast Workflows',
-      description: 'From an email sitting unread in your inbox to a fully structured CRM entry in less time than it takes to brew coffee.'
+      icon: Workflow,
+      title: 'n8n + Webhook Ready',
+      description: 'Trigger workflows on any deal event. Push data to Slack, Notion, or your own internal tools automatically.'
+    },
+    {
+      icon: Shield,
+      title: 'Privacy by Default',
+      description: 'Your deal data is never stored after processing, never used for training. Full confidentiality by design.'
+    },
+    {
+      icon: SearchCheck,
+      title: 'Analyst-Grade Verification',
+      description: 'Not just extraction. Cross-references founder claims against LinkedIn, Tracxn, and public data before presenting.'
     }
   ];
 
@@ -81,7 +94,7 @@ const FeatureCards = () => {
     <section id="features" style={{ padding: '100px 0', position: 'relative' }}>
         <div className="container">
            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-              <h2>End-to-End <span className="text-gradient">Automation</span></h2>
+              <h2>Deal Intelligence That Compounds. <br /><span className="text-gradient">Not One-Off Audits.</span></h2>
            </div>
            
            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', perspective: '1000px' }}>

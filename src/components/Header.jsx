@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Layers, LogOut } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Layers, LogOut, Menu, X } from 'lucide-react';
 import { googleLogout } from '@react-oauth/google';
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -62,8 +63,9 @@ const Header = () => {
            transition={{ delay: 0.1 }}
            style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', fontWeight: '500' }}
         >
-          <a href="/#problems" className="mobile-hidden" style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>How it Works</a>
+          <a href="/#workflow" className="mobile-hidden" style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>How it Works</a>
           <a href="/#features" className="mobile-hidden" style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>Features</a>
+          <a href="/#integrations" className="mobile-hidden" style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>Integrations</a>
           <a href="/pricing" className="mobile-hidden" style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>Pricing</a>
           
           {currentUser ? (
@@ -80,11 +82,11 @@ const Header = () => {
               )}
               
               <button 
-                className="btn btn-secondary" 
+                className="btn btn-secondary mobile-hidden" 
                 onClick={handleLogout}
                 style={{ padding: '0.4rem 0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem' }}
               >
-                <LogOut size={14} /> <span className="mobile-hidden">Logout</span>
+                <LogOut size={14} /> <span>Logout</span>
               </button>
               <button 
                 className="btn btn-primary" 
@@ -95,12 +97,52 @@ const Header = () => {
               </button>
             </div>
           ) : (
-            <button className="btn btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.95rem' }}>
+            <button className="btn btn-primary mobile-hidden" style={{ padding: '0.5rem 1.25rem', fontSize: '0.95rem' }}>
               Book Demo
             </button>
           )}
+          
+          <button 
+            className="mobile-block" 
+            style={{ display: 'none', border: 'none', background: 'transparent', color: 'white', cursor: 'pointer', padding: '0.5rem' }}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
         </motion.nav>
       </div>
+
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            style={{ overflow: 'hidden', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)', marginTop: '1rem' }}
+          >
+            <div className="container" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1.5rem' }}>
+              <a href="/#workflow" onClick={() => setMobileMenuOpen(false)} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '1.1rem' }}>How it Works</a>
+              <a href="/#features" onClick={() => setMobileMenuOpen(false)} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '1.1rem' }}>Features</a>
+              <a href="/#integrations" onClick={() => setMobileMenuOpen(false)} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '1.1rem' }}>Integrations</a>
+              <a href="/pricing" onClick={() => setMobileMenuOpen(false)} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '1.1rem' }}>Pricing</a>
+              {currentUser ? (
+                <button 
+                  className="btn btn-secondary" 
+                  onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
+                  style={{ width: '100%', justifyContent: 'center' }}
+                >
+                  <LogOut size={16} /> Logout
+                </button>
+              ) : (
+                <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={() => setMobileMenuOpen(false)}>
+                  Book Demo
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </header>
   );
 };

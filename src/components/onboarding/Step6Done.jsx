@@ -9,10 +9,10 @@ const slideVariants = {
 };
 
 const summaryItems = [
-  { icon: '🔐', label: 'Account', key: null },
-  { icon: '📊', label: 'Google Sheets', key: 'sheetUrl' },
-  { icon: '📁', label: 'Google Drive', key: 'driveFolderId' },
-  { icon: '📧', label: 'Email Routing', key: null },
+  { icon: '🔐', label: 'Account', done: true },
+  { icon: '🎯', label: 'Evaluation Criteria', done: true },
+  { icon: '🗺️', label: 'Sheet Mapping', done: true },
+  { icon: '📥', label: 'Data Source', done: true },
 ];
 
 const Step6Done = ({ data, isPaid }) => {
@@ -57,35 +57,32 @@ const Step6Done = ({ data, isPaid }) => {
         >
           ✅
         </motion.div>
-        <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', marginBottom: '0.4rem' }}>All set up!</h2>
+        <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', marginBottom: '0.4rem' }}>You're all set!</h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
-          Welcome aboard, {data.role ? `${data.role}` : 'SafeDeck Pro'}. Your workspace is ready.
+          Your 30-day free trial has started. Your SafeDeck workspace is ready.
         </p>
 
-        {/* Payment confirmed badge */}
-        {isPaid && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.35, type: 'spring', stiffness: 180 }}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              background: 'rgba(16, 185, 129, 0.1)',
-              border: '1px solid rgba(16, 185, 129, 0.35)',
-              borderRadius: '100px',
-              padding: '0.45rem 1.1rem',
-              marginTop: '0.85rem',
-              fontSize: '0.88rem',
-              fontWeight: 700,
-              color: '#10b981',
-              boxShadow: '0 0 20px rgba(16, 185, 129, 0.15)',
-            }}
-          >
-            Payment confirmed ✅
-          </motion.div>
-        )}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.35, type: 'spring', stiffness: 180 }}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            background: 'rgba(16, 185, 129, 0.1)',
+            border: '1px solid rgba(16, 185, 129, 0.35)',
+            borderRadius: '100px',
+            padding: '0.45rem 1.1rem',
+            marginTop: '0.85rem',
+            fontSize: '0.88rem',
+            fontWeight: 700,
+            color: '#10b981',
+            boxShadow: '0 0 20px rgba(16, 185, 129, 0.15)',
+          }}
+        >
+          🎁 30-day free trial started ✅
+        </motion.div>
       </div>
 
       {/* Summary Cards */}
@@ -104,7 +101,7 @@ const Step6Done = ({ data, isPaid }) => {
       {/* Processing Animation */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '1.4rem', marginBottom: '2rem' }}>
         <div style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.95rem' }}>
-          {progress < 100 ? '🕐 Your first audit is being processed...' : '🎉 Your workspace is ready!'}
+          {progress < 100 ? '🕐 Setting up your workspace...' : '🎉 Your workspace is ready!'}
         </div>
         <div style={{ height: '6px', background: 'rgba(255,255,255,0.06)', borderRadius: '3px', overflow: 'hidden', marginBottom: '0.75rem' }}>
           <motion.div
@@ -115,8 +112,8 @@ const Step6Done = ({ data, isPaid }) => {
         </div>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: 0 }}>
           {progress < 100
-            ? 'This takes about 2 minutes. We\'ll notify you when it\'s ready.'
-            : 'Head to your dashboard to see your first audit results.'}
+            ? 'Activating your evaluation criteria, sheet mapping, and inbox routing...'
+            : 'Everything is configured. Upload your first deck to see it in action.'}
         </p>
       </div>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, Briefcase, TrendingUp, BarChart2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, Briefcase, TrendingUp, BarChart2, Database, Search } from 'lucide-react';
 
 const mockData = {
   company: "Nexus Quantum",
@@ -130,6 +130,76 @@ const SampleAuditDashboard = ({ onBack }) => {
             </div>
           </div>
         </div>
+
+        {/* AI Verification Trace */}
+        <div className="glass-panel" style={{ marginTop: '2rem', padding: 'clamp(1.5rem, 3vw, 2.5rem)', border: '1px solid rgba(139, 92, 246, 0.3)' }}>
+          <h3 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+             <Search size={20} color="var(--accent-purple)" /> AI Verification Trace
+          </h3>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Claim Extracted</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 500, marginBottom: '1rem', color: 'white' }}>"Reached $1.2M ARR in hardware sales"</div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>SOURCE</div>
+                  <div style={{ fontSize: '0.95rem' }}>Pitch Deck, Slide 4, Paragraph 2</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>CROSS-REFERENCE</div>
+                  <div style={{ fontSize: '0.95rem' }}>Matches Tracxn and recent robust PR announcements — <span style={{color: 'var(--text-secondary)'}}>Consistent</span></div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>STATUS</div>
+                  <div style={{ fontSize: '0.95rem', color: 'var(--accent-green)', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}><CheckCircle size={14} /> Verified</div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Claim Extracted</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 500, marginBottom: '1rem', color: 'white' }}>"TAM of $45B by 2030"</div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>SOURCE</div>
+                  <div style={{ fontSize: '0.95rem' }}>Pitch Deck, Slide 9, Market Sizing</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>CROSS-REFERENCE</div>
+                  <div style={{ fontSize: '0.95rem' }}>Gartner Report 2024 projects exact niche at $38B — <span style={{color: 'var(--text-secondary)'}}>Slight Discrepancy</span></div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>STATUS</div>
+                  <div style={{ fontSize: '0.95rem', color: 'var(--accent-red)', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}><AlertTriangle size={14} /> Flagged</div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Claim Extracted</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 500, marginBottom: '1rem', color: 'white' }}>"Founders built previous unicorn"</div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>SOURCE</div>
+                  <div style={{ fontSize: '0.95rem' }}>Founder Updates Email (Feb 12)</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>CROSS-REFERENCE</div>
+                  <div style={{ fontSize: '0.95rem' }}>LinkedIn history confirms core team scaled 'TechFusion' from Series A to acquisition — <span style={{color: 'var(--text-secondary)'}}>Confirmed</span></div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>STATUS</div>
+                  <div style={{ fontSize: '0.95rem', color: 'var(--accent-green)', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}><CheckCircle size={14} /> Verified</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </motion.div>
     </div>
   );

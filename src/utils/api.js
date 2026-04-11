@@ -76,7 +76,7 @@ export const loginWithGoogle = async (accessToken) => {
 /**
  * Step 2: Save fund profile details.
  */
-export const saveFundProfile = async ({ userId, email, fundName, role, website, volume }) => {
+export const saveFundProfile = async ({ userId, email, fundName, role, website, volume, thesis, sectors, stages }) => {
   return userSyncPost({
     userId,
     email,
@@ -84,6 +84,9 @@ export const saveFundProfile = async ({ userId, email, fundName, role, website, 
     role,
     website: website || '',
     decks_per_month: volume,
+    thesis: thesis || '',
+    sectors: sectors || [],
+    stages: stages || [],
   });
 };
 
@@ -110,9 +113,32 @@ export const saveDriveFolderId = async ({ userId, email, driveFolderId }) => {
 };
 
 /**
- * Step 5: Save email routing preference.
+ * Step 3: Save evaluation criteria (must_have, nice_to_have, ignore lists + rating template).
  */
-export const saveEmailRouting = async ({ userId, email, safedeckEmail }) => {
+export const saveEvaluationCriteria = async ({ userId, email, evaluationCriteria, ratingTemplate }) => {
+  return userSyncPost({
+    userId,
+    email,
+    evaluation_criteria: evaluationCriteria,
+    rating_template: ratingTemplate,
+  });
+};
+
+/**
+ * Step 4: Save output sheet mapping (field → column).
+ */
+export const saveSheetMapping = async ({ userId, email, outputSheetMapping }) => {
+  return userSyncPost({
+    userId,
+    email,
+    output_sheet_mapping: outputSheetMapping,
+  });
+};
+
+/**
+ * Step 5: Save data source preference.
+ */
+export const saveDataSource = async ({ userId, email, dataSource, safedeckEmail }) => {
   return userSyncPost({
     userId,
     email,
